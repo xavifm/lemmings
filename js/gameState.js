@@ -1,14 +1,14 @@
 class gameState extends Phaser.Scene
 {
     constructor()
-    { //crea la escena
+    {
         super(
         {
             key:"gameState"
         });
     }
     preload()
-    { //carga los assets en memoria
+    {
         this.cameras.main.setBackgroundColor("#000000");
 
         this.load.spritesheet('lemming','lemmings_spritesheet.png',
@@ -18,23 +18,30 @@ class gameState extends Phaser.Scene
     create()
     { 
        this.timerSpawn = Math.random() * (4 - 1) + 1;
-       //carga los assets en pantalla desde memoria
        this.bg1 = this.add.tileSprite(0,0,config.width,config.height,'background1').setOrigin(0);
        this.bg2 = this.add.tileSprite(0,0,config.width,config.height,'background2').setOrigin(0); 
 
-       this.nave = this.physics.add.sprite(config.width/2,config.height*.95,'lemming').setOrigin(.5).setScale(1);
-       
-       this.nave.body.collideWorldBounds = true;
-
        this.loadAnimations();
+       this.enemies = this.physics.add.group();
+       for (let index = 0; index < 5; index++) 
+       {
+        this.createLemming(50+index*50, 500);   
+       }
     }
 
-    flipDir() 
+    createLemming(posx, posy)
     {
-        if(!this.nave.flipX)
-        this.nave.flipX = true;
+        var lemming = this.enemies.getFirst(false);
+        if(!lemming)
+        {
+            lemming = new lemmingPrefab(this,posx,posy,'lemming');
+            this.enemies.add(lemming);
+        }
         else
-        this.nave.flipX = false;
+        {
+            lemming.active = true;
+            lemming.body.reset(posx,posy);
+        }
     }
 
     loadAnimations()
@@ -45,21 +52,9 @@ class gameState extends Phaser.Scene
             frameRate: 10,
             repeat: -1
         });
-        this.nave.anims.play('walk');  
-        this.nave.flipX = true;
     }
 
     update()
     {
-        if(this.nave.body.x <= 2 || this.nave.body.x >= 720) 
-        this.flipDir();
-        if(!this.nave.flipX) 
-        {
-            this.nave.body.x += 1;
-        }
-        else 
-        {
-            this.nave.body.x -= 1; 
-        }
     }
 }

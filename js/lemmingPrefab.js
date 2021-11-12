@@ -11,8 +11,12 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
 
     preUpdate(time, delta)
     {
-        if(this.body.y >= 555)
-        this.body.setVelocityY(0);
+        this.body.setVelocityY(0); 
+        var touchingGround = false;
+
+        if(this.body.y >= config.height-50)
+        touchingGround = true;
+
         if(this.body.x <= 2 || this.body.x >= 720) 
         {
             if(!this.flipX)
@@ -20,13 +24,17 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
             else
             this.flipX = false;
         }
-        if(!this.flipX) 
+        if(!this.flipX && touchingGround) 
         {
             this.body.setVelocityX(50);
         }
-        else 
+        else if(touchingGround)
         {
             this.body.setVelocityX(-50); 
+        }
+        else 
+        {
+            this.body.setVelocityY(50); 
         }
         super.preUpdate(time, delta)
     }

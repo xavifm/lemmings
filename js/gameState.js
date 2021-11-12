@@ -23,7 +23,7 @@ class gameState extends Phaser.Scene
 
        this.loadAnimations();
        this.enemies = this.physics.add.group();
-       for (let index = 0; index < 5; index++) 
+       for (let index = 0; index < 10; index++) 
        {
         this.createLemming(50+index*50, 500);   
        }

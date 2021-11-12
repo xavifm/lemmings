@@ -20,7 +20,6 @@ var config=
     physics:{
         default:'arcade',
         arcade:{
-            gravity:{y:9.8},
             debug:true
         }
     }

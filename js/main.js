@@ -2,7 +2,8 @@ var gamePrefs=
 {
     speedNave:2,
     speedBullet:-100,
-    speedEnemy:1
+    speedEnemy:1,
+    touchingGround: false
 }
 
 var timerSpawn = 0;
@@ -20,7 +21,8 @@ var config=
     physics:{
         default:'arcade',
         arcade:{
-            debug:true
+            debug:true,
+            gravity:{y:50}
         }
     }
 }

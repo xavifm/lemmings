@@ -7,16 +7,14 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
         _scene.physics.add.existing(this);
         this.setOrigin(.5, 0);
         this.anims.play('walk',true);
+        const Kscene = this.scene.scene.get("gameState");
+        Kscene.physics.add.overlap(this, Kscene.bullets, function(){
+            gamePrefs.touchingGround = true;
+        });
     }
 
     preUpdate(time, delta)
     {
-        this.body.setVelocityY(0); 
-        var touchingGround = false;
-
-        if(this.body.y >= config.height-50)
-        touchingGround = true;
-
         if(this.body.x <= 2 || this.body.x >= 720) 
         {
             if(!this.flipX)
@@ -24,17 +22,13 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
             else
             this.flipX = false;
         }
-        if(!this.flipX && touchingGround) 
+        if(!this.flipX && gamePrefs.touchingGround) 
         {
             this.body.setVelocityX(50);
         }
-        else if(touchingGround)
+        else if(gamePrefs.touchingGround)
         {
             this.body.setVelocityX(-50); 
-        }
-        else 
-        {
-            this.body.setVelocityY(50); 
         }
         super.preUpdate(time, delta)
     }

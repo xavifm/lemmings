@@ -9,24 +9,30 @@ class gameState extends Phaser.Scene
     }
     preload()
     {
-        this.cameras.main.setBackgroundColor("#000000");
-
-        this.load.spritesheet('lemming','lemmings_spritesheet.png',
-        {frameWidth:50,frameHeight:45});
+        this.cameras.main.setBackgroundColor("#000031");
+        this.load.spritesheet('lemming','assets/lemmings_sp.png',
+        {frameWidth:20,frameHeight:10});
+        this.load.image('tempTerrain','assets/tempTerrain.png');
       
     }
     create()
     { 
        this.timerSpawn = Math.random() * (4 - 1) + 1;
-       this.bg1 = this.add.tileSprite(0,0,config.width,config.height,'background1').setOrigin(0);
-       this.bg2 = this.add.tileSprite(0,0,config.width,config.height,'background2').setOrigin(0); 
 
        this.loadAnimations();
        this.enemies = this.physics.add.group();
+       this.bullets = this.physics.add.group();
        for (let index = 0; index < 10; index++) 
        {
-        this.createLemming(50+index*50, 500);   
+        this.createLemming(50+index*50, 200);   
        }
+       
+       for(let index = 0; index <10; index++)
+       {
+        this.createTerrain(45+index*90, 400);
+       }
+       
+       this.physics.add.collider(this.enemies, this.bullets);
     }
 
     createLemming(posx, posy)
@@ -35,6 +41,7 @@ class gameState extends Phaser.Scene
         if(!lemming)
         {
             lemming = new lemmingPrefab(this,posx,posy,'lemming');
+            lemming.setScale(2);
             this.enemies.add(lemming);
         }
         else
@@ -44,11 +51,27 @@ class gameState extends Phaser.Scene
         }
     }
 
+    createTerrain(posx, posy)
+    {
+        var terrain = this.bullets.getFirst(false);
+        if(!terrain)
+        {
+            terrain = new terrainPrefab(this,posx,posy,'tempTerrain');
+            terrain.setScale(2);
+            this.bullets.add(terrain);
+        }
+        else
+        {
+            terrain.active = true;
+            terrain.body.reset(posx,posy);
+        }
+    }
+
     loadAnimations()
     {
 		this.anims.create({
             key: 'walk',
-            frames: this.anims.generateFrameNumbers('lemming', { start: 18, end: 22 }),
+            frames: this.anims.generateFrameNumbers('lemming', { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1
         });

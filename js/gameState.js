@@ -22,25 +22,31 @@ class gameState extends Phaser.Scene
        this.loadAnimations();
        this.enemies = this.physics.add.group();
        this.bullets = this.physics.add.group();
+       this.wallsGroup = this.physics.add.group();
        for (let index = 0; index < 10; index++) 
        {
-        this.createLemming(50+index*50, 200);   
+        this.createLemming(80+index*50, 200, index);   
        }
        
-       for(let index = 0; index <10; index++)
+       for(let index = 0; index < 10; index++)
        {
-        this.createTerrain(45+index*90, 400);
+        this.createTerrain(45+index*90, 400, false);
+       }
+       for(let index = 0; index < 2; index++)
+       {
+        this.createTerrain(index*800, 310, true);
        }
        
        this.physics.add.collider(this.enemies, this.bullets);
+       this.physics.add.collider(this.enemies, this.wallsGroup);
     }
 
-    createLemming(posx, posy)
+    createLemming(posx, posy, index)
     {
         var lemming = this.enemies.getFirst(false);
         if(!lemming)
         {
-            lemming = new lemmingPrefab(this,posx,posy,'lemming');
+            lemming = new lemmingPrefab(this,posx,posy,'lemming', index);
             lemming.setScale(2);
             this.enemies.add(lemming);
         }
@@ -51,14 +57,22 @@ class gameState extends Phaser.Scene
         }
     }
 
-    createTerrain(posx, posy)
+    createTerrain(posx, posy, isWall)
     {
-        var terrain = this.bullets.getFirst(false);
+        var terrain
+        if(!isWall)
+        terrain = this.bullets.getFirst(false);
+        else
+        terrain = this.wallsGroup.getFirst(false);
+
         if(!terrain)
         {
             terrain = new terrainPrefab(this,posx,posy,'tempTerrain');
             terrain.setScale(2);
+            if(!isWall)
             this.bullets.add(terrain);
+            else
+            this.wallsGroup.add(terrain);
         }
         else
         {
@@ -79,5 +93,6 @@ class gameState extends Phaser.Scene
 
     update()
     {
+
     }
 }

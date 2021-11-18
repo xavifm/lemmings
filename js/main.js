@@ -4,7 +4,9 @@ var gamePrefs=
     speedBullet:-100,
     speedEnemy:1,
     touchingGround: [],
-    flipX: []
+    flipX: [],
+    walking: [],
+    digging: []
 }
 
 var timerSpawn = 0;
@@ -23,7 +25,7 @@ var config=
     physics:{
         default:'arcade',
         arcade:{
-            debug:false,
+            debug:true,
             gravity:{y:50}
         }
     }

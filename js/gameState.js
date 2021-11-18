@@ -10,8 +10,10 @@ class gameState extends Phaser.Scene
     preload()
     {
         this.cameras.main.setBackgroundColor("#000031");
-        this.load.spritesheet('lemming','assets/lemmings_sp.png',
-        {frameWidth:20,frameHeight:10});
+        this.load.spritesheet('walkLemming','assets/Walk_Lemmings(6x10).png',
+        {frameWidth:6,frameHeight:10});
+        this.load.spritesheet('digLemming','assets/Dig_Lemmings(11x12).png',
+        {frameWidth:11,frameHeight:12});
         this.load.image('tempTerrain','assets/tempTerrain.png');
       
     }
@@ -23,11 +25,7 @@ class gameState extends Phaser.Scene
        this.enemies = this.physics.add.group();
        this.bullets = this.physics.add.group();
        this.wallsGroup = this.physics.add.group();
-       for (let index = 0; index < 10; index++) 
-       {
-        this.createLemming(80+index*50, 200, index);   
-       }
-       
+              
        for(let index = 0; index < 10; index++)
        {
         this.createTerrain(45+index*90, 400, false);
@@ -36,9 +34,14 @@ class gameState extends Phaser.Scene
        {
         this.createTerrain(index*800, 310, true);
        }
+
+       for (let index = 0; index < 10; index++) 
+       {
+        this.createLemming(80+index*50, 200, index);   
+       }
        
-       this.physics.add.collider(this.enemies, this.bullets);
-       this.physics.add.collider(this.enemies, this.wallsGroup);
+       var collider1 = this.physics.add.collider(this.enemies, this.bullets);
+       var collider2 = this.physics.add.collider(this.enemies, this.wallsGroup);
     }
 
     createLemming(posx, posy, index)
@@ -46,8 +49,32 @@ class gameState extends Phaser.Scene
         var lemming = this.enemies.getFirst(false);
         if(!lemming)
         {
-            lemming = new lemmingPrefab(this,posx,posy,'lemming', index);
+            lemming = new lemmingPrefab(this,posx,posy,'walkLemming', index).setInteractive();
             lemming.setScale(2);
+
+            lemming.on('pointerdown', function (pointer) {
+
+                this.setTint(0xff0000);
+                //this.anims.play('dig',true);
+                gamePrefs.walking[index] = false;
+                gamePrefs.digging[index] = true;
+                //lemming.physics.checkCollision.none = false;
+                //collider1.active = false;
+        
+            });
+        
+            lemming.on('pointerout', function (pointer) {
+        
+                this.clearTint();
+        
+            });
+        
+            lemming.on('pointerup', function (pointer) {
+        
+                this.clearTint();
+        
+            });
+
             this.enemies.add(lemming);
         }
         else
@@ -85,7 +112,14 @@ class gameState extends Phaser.Scene
     {
 		this.anims.create({
             key: 'walk',
-            frames: this.anims.generateFrameNumbers('lemming', { start: 0, end: 7 }),
+            frames: this.anims.generateFrameNumbers('walkLemming', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'dig',
+            frames: this.anims.generateFrameNumbers('digLemming', { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1
         });

@@ -40,8 +40,8 @@ class gameState extends Phaser.Scene
         this.createLemming(80+index*50, 200, index);   
        }
        
-       var collider1 = this.physics.add.collider(this.enemies, this.bullets);
-       var collider2 = this.physics.add.collider(this.enemies, this.wallsGroup);
+       collider1 = this.physics.add.overlap(this.enemies, this.bullets);
+       collider2 = this.physics.add.overlap(this.enemies, this.wallsGroup);
     }
 
     createLemming(posx, posy, index)

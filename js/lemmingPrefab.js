@@ -32,11 +32,13 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
         //Moure en el sentit de l'sprite quan estigui tocant el terra
         if(!this.flipX && gamePrefs.touchingGround[this.index] && this.walking) 
         {
+            this.body.setVelocityY(-1);
             this.body.setVelocityX(50);
         }
         else if(gamePrefs.touchingGround[this.index] && this.walking)
         {
             //this.Sprite.stop();
+            this.body.setVelocityY(-1);
             this.body.setVelocityX(-50); 
         }
         
@@ -45,8 +47,10 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
         {
             this.anims.play('dig',true);
             this.body.setVelocityX(0);
-            this.body.setVelocityY(50);
+            this.body.setVelocityY(25);
         }
+
+        gamePrefs.touchingGround[this.index] = false; 
 
         super.preUpdate(time, delta)
     }

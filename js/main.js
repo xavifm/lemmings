@@ -12,6 +12,8 @@ var gamePrefs=
 var timerSpawn = 0;
 var lifes = 2;
 var wallsGroup;
+var collider1;
+var collider2;
 
 var config=
 {

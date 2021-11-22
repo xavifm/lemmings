@@ -15,16 +15,17 @@ class gameState extends Phaser.Scene
         this.load.spritesheet('digLemming','assets/Dig_Lemmings(11x12).png',
         {frameWidth:11,frameHeight:12});
         this.load.image('tempTerrain','assets/tempTerrain.png');
-      
+        this.load.image('mask','assets/mask.png');
     }
     create()
     { 
        this.timerSpawn = Math.random() * (4 - 1) + 1;
 
        this.loadAnimations();
-       this.enemies = this.physics.add.group();
        this.bullets = this.physics.add.group();
        this.wallsGroup = this.physics.add.group();
+       this.maskGroup = this.physics.add.group();
+       this.enemies = this.physics.add.group();
               
        for(let index = 0; index < 10; index++)
        {
@@ -42,6 +43,7 @@ class gameState extends Phaser.Scene
        
        collider1 = this.physics.add.overlap(this.enemies, this.bullets);
        collider2 = this.physics.add.overlap(this.enemies, this.wallsGroup);
+       maskCollider = this.physics.add.overlap(this.enemies, this.maskGroup);
     }
 
     createLemming(posx, posy, index)
@@ -108,6 +110,23 @@ class gameState extends Phaser.Scene
         }
     }
 
+    createMask(posx, posy)
+    {
+        var mask = this.maskGroup.getFirst(false);
+
+        if(!mask)
+        {
+            mask = new maskPrefab(this,posx,posy,'mask');
+            mask.setScale(1);
+            this.maskGroup.add(mask);
+        }
+        else
+        {
+            mask.active = true;
+            mask.body.reset(posx,posy);
+        }
+    }
+
     loadAnimations()
     {
 		this.anims.create({
@@ -127,6 +146,5 @@ class gameState extends Phaser.Scene
 
     update()
     {
-
     }
 }

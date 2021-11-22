@@ -6,14 +6,19 @@ var gamePrefs=
     touchingGround: [],
     flipX: [],
     walking: [],
-    digging: []
+    digging: [],
+    xpos: [],
+    ypos: [],
+    fallingInsideATunnel: []
 }
 
 var timerSpawn = 0;
 var lifes = 2;
 var wallsGroup;
+var maskGroup;
 var collider1;
 var collider2;
+var maskCollider;
 
 var config=
 {
@@ -27,7 +32,7 @@ var config=
     physics:{
         default:'arcade',
         arcade:{
-            debug:true,
+            debug:false,
             gravity:{y:50}
         }
     }

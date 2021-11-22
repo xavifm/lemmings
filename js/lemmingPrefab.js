@@ -9,10 +9,13 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
         this.setOrigin(.5, .5);
         this.anims.play('walk',true);
         gamePrefs.walking[posNum] = true;
+        this.depth = 1;
         const Kscene = this.scene.scene.get("gameState");
         this.index = posNum;
         Kscene.physics.add.overlap(this, Kscene.bullets, function(){
-            gamePrefs.touchingGround[posNum] = true;        
+            gamePrefs.touchingGround[posNum] = true; 
+            if(gamePrefs.digging[posNum]) 
+                Kscene.createMask(gamePrefs.xpos[posNum], gamePrefs.ypos[posNum]);  
         });
         Kscene.physics.add.overlap(this, Kscene.wallsGroup, function(){
             if(!gamePrefs.flipX[posNum])
@@ -21,13 +24,22 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
             gamePrefs.flipX[posNum] = false;
             
         });
+        Kscene.physics.add.overlap(this, Kscene.maskGroup, function(){
+            gamePrefs.fallingInsideATunnel[posNum] = true;
+            gamePrefs.touchingGround[posNum] = false;
+        });
     }
 
     preUpdate(time, delta)
     {
+        gamePrefs.xpos[this.index] = this.body.x;
+        gamePrefs.ypos[this.index] = this.body.y;
         this.flipX = gamePrefs.flipX[this.index];
         this.walking = gamePrefs.walking[this.index];
         this.digging = gamePrefs.digging[this.index];
+        
+        this.body.setVelocityX(0);
+        this.body.maxVelocity.y = 50;
 
         //Moure en el sentit de l'sprite quan estigui tocant el terra
         if(!this.flipX && gamePrefs.touchingGround[this.index] && this.walking) 
@@ -51,6 +63,7 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
         }
 
         gamePrefs.touchingGround[this.index] = false; 
+        gamePrefs.fallingInsideATunnel[this.index] = false;
 
         super.preUpdate(time, delta)
     }

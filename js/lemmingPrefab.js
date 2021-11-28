@@ -28,6 +28,10 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
             gamePrefs.fallingInsideATunnel[posNum] = true;
             gamePrefs.touchingGround[posNum] = false;
         });
+
+        Kscene.physics.add.overlap(this, Kscene.doors, function() {
+            gamePrefs.finished[posNum] = true;
+        });
     }
 
     preUpdate(time, delta)
@@ -61,9 +65,21 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
             this.body.setVelocityX(0);
             this.body.setVelocityY(25);
         }
+        else if(!gamePrefs.touchingGround[this.index] && this.body.velocity.y > 30 && this.digging) 
+        {
+            this.anims.play('walk',true);
+            gamePrefs.digging[this.index] = false;
+            gamePrefs.walking[this.index] = true;
+        }
 
         gamePrefs.touchingGround[this.index] = false; 
         gamePrefs.fallingInsideATunnel[this.index] = false;
+        
+        if(gamePrefs.finished[this.index]) 
+        {
+            this.body.maxVelocity.y = 99999999;
+            this.body.setVelocityY(99999999);
+        }
 
         super.preUpdate(time, delta)
     }

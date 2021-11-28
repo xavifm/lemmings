@@ -9,7 +9,8 @@ var gamePrefs=
     digging: [],
     xpos: [],
     ypos: [],
-    fallingInsideATunnel: []
+    fallingInsideATunnel: [],
+    finished: []
 }
 
 var timerSpawn = 0;
@@ -19,6 +20,7 @@ var maskGroup;
 var collider1;
 var collider2;
 var maskCollider;
+var doors;
 
 var config=
 {

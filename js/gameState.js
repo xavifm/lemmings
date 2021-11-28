@@ -14,9 +14,12 @@ class gameState extends Phaser.Scene
         {frameWidth:6,frameHeight:10});
         this.load.spritesheet('digLemming','assets/Dig_Lemmings(11x12).png',
         {frameWidth:11,frameHeight:12});
+        this.load.spritesheet('trapDoor','assets/trapDoor.png',
+        {frameWidth:41,frameHeight:25});
+        this.load.spritesheet('door','assets/door.png',
+        {frameWidth:33,frameHeight:25});
         this.load.image('tempTerrain','assets/tempTerrain.png');
         this.load.image('mask','assets/mask.png');
-        this.load.image('door','assets/door.png');
     }
     create()
     { 
@@ -40,12 +43,9 @@ class gameState extends Phaser.Scene
         this.createTerrain(index*800, 410+50, true);
        }
 
-       for (let index = 0; index < 10; index++) 
-       {
-        this.createLemming(80+index*50, 200, index);   
-       }
+       this.createDoor(500, 502);
 
-       this.createDoor(500, 500);
+       this.createTrapDoor(100, 100);
        
        collider1 = this.physics.add.overlap(this.enemies, this.bullets);
        collider2 = this.physics.add.overlap(this.enemies, this.wallsGroup);
@@ -103,7 +103,7 @@ class gameState extends Phaser.Scene
 
         if(!terrain)
         {
-            terrain = new terrainPrefab(this,posx,posy,'tempTerrain');
+            terrain = new terrainPrefab(this,posx,posy,'tempTerrain', false);
             terrain.setScale(2);
             if(!isWall)
             this.bullets.add(terrain);
@@ -115,6 +115,12 @@ class gameState extends Phaser.Scene
             terrain.active = true;
             terrain.body.reset(posx,posy);
         }
+    }
+
+    createTrapDoor(posx, posy) 
+    {
+        var door = new doorPrefab(this,posx,posy,'trapDoor', true);
+        door.setScale(2);
     }
 
     createDoor(posx, posy)
@@ -142,7 +148,7 @@ class gameState extends Phaser.Scene
         if(!mask)
         {
             mask = new maskPrefab(this,posx,posy,'mask');
-            mask.setScale(1.5);
+            mask.setScale(1.8);
             this.maskGroup.add(mask);
         }
         else
@@ -167,9 +173,31 @@ class gameState extends Phaser.Scene
             frameRate: 10,
             repeat: -1
         });
+
+        this.anims.create({
+            key: 'openTrapDoor',
+            frames: this.anims.generateFrameNumbers('trapDoor', { start: 0, end: 9 }),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'DoorAnim',
+            frames: this.anims.generateFrameNumbers('door', { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: -1
+        });
     }
 
     update()
     {
+        timeSinceLastIncrement += 0.01;
+        
+        if (timeSinceLastIncrement >= 1 && index < 10)
+        {
+          this.createLemming(100, 110, index); 
+          index++;  
+          timeSinceLastIncrement = 0;
+        }
     }
 }

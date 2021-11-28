@@ -21,6 +21,8 @@ var collider1;
 var collider2;
 var maskCollider;
 var doors;
+var timeSinceLastIncrement = 0;
+var index = 0;
 
 var config=
 {

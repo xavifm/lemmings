@@ -57,6 +57,18 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
             this.body.setVelocityY(-1);
             this.body.setVelocityX(-50); 
         }
+
+        if(this.body.velocity.y > 30 && !this.digging) 
+        {
+            if(this.body.velocity.y < 35)
+            this.anims.play('fallOpenUmbrella', true);
+            else
+            this.anims.play('fallUmbrellaOpened', true);
+        }
+        else if(!this.digging)
+        {
+            this.anims.play('walk',true);
+        }
         
         //Override quan estigui tocant el terra i fent l'animació 'dig'
         if(gamePrefs.touchingGround[this.index] && this.digging)

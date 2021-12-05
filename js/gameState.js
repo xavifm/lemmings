@@ -12,6 +12,8 @@ class gameState extends Phaser.Scene
         this.cameras.main.setBackgroundColor("#000031");
         this.load.spritesheet('walkLemming','assets/Walk_Lemmings(6x10).png',
         {frameWidth:6,frameHeight:10});
+        this.load.spritesheet('fallLemming','assets/Fall_Lemmings(6x10).png',
+        {frameWidth:6,frameHeight:10});
         this.load.spritesheet('digLemming','assets/Dig_Lemmings(11x12).png',
         {frameWidth:11,frameHeight:12});
         this.load.spritesheet('trapDoor','assets/trapDoor.png',
@@ -163,6 +165,20 @@ class gameState extends Phaser.Scene
 		this.anims.create({
             key: 'walk',
             frames: this.anims.generateFrameNumbers('walkLemming', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'fallOpenUmbrella',
+            frames: this.anims.generateFrameNumbers('fallLemming', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'fallUmbrellaOpened',
+            frames: this.anims.generateFrameNumbers('fallLemming', { start: 4, end: 7 }),
             frameRate: 10,
             repeat: -1
         });

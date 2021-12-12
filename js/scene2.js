@@ -12,10 +12,14 @@ class scene2 extends Phaser.Scene
         this.cameras.main.setBackgroundColor("#000000");
         this.load.spritesheet('walkLemming','assets/Walk_Lemmings(6x10).png',
         {frameWidth:6,frameHeight:10});
-        this.load.spritesheet('fallLemming','assets/Fall_Lemmings(6x10).png',
-        {frameWidth:6,frameHeight:10});
+        this.load.spritesheet('fallLemming','assets/Fall_Lemmings9x16.png',
+        {frameWidth:9,frameHeight:16});
         this.load.spritesheet('digLemming','assets/Dig_Lemmings(11x12).png',
         {frameWidth:11,frameHeight:12});
+        this.load.spritesheet('exitLemming','assets/Exiting_Lemmings5x13.png',
+        {frameWidth:5,frameHeight:13});
+        this.load.spritesheet('dieLemming','assets/Die_Lemmings16x10.png',
+        {frameWidth:16,frameHeight:10});
         this.load.spritesheet('trapDoor','assets/trapDoor.png',
         {frameWidth:41,frameHeight:25});
         this.load.spritesheet('door','assets/door2.png',
@@ -27,6 +31,12 @@ class scene2 extends Phaser.Scene
     }
     create()
     {
+       index = 0;
+       for(let index = 0 ; index < gamePrefs.finished.length ; index++) 
+       {
+            console.log(gamePrefs.finished[index]);
+       }
+
        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
        this.timerSpawn = Math.random() * (4 - 1) + 1;
 
@@ -46,7 +56,7 @@ class scene2 extends Phaser.Scene
         this.createTerrain(index*800, 410+50, true);
        }
 
-       var columnHeight = 5;
+       var columnHeight = 8;
 
        for(let index = 0; index < 3; index++)
        {
@@ -74,19 +84,8 @@ class scene2 extends Phaser.Scene
         var lemming = this.enemies.getFirst(false);
         if(!lemming)
         {
-            lemming = new lemmingPrefab(this,posx,posy,'walkLemming', index, "scene2").setInteractive();
+            lemming = new lemmingPrefab(this,posx,posy,'fallLemming', index, "scene2").setInteractive();
             lemming.setScale(2);
-
-            lemming.on('pointerdown', function (pointer) 
-            {
-
-                this.setTint(0xff0000);
-                //this.anims.play('dig',true);
-                gamePrefs.walking[index] = false;
-                gamePrefs.digging[index] = true;
-                //lemming.physics.checkCollision.none = false;
-                //collider1.active = false;
-            });
         
             lemming.on('pointerover', function (pointer) 
             {
@@ -213,7 +212,7 @@ class scene2 extends Phaser.Scene
 
     loadAnimations()
     {
-		this.anims.create({
+        this.anims.create({
             key: 'walk',
             frames: this.anims.generateFrameNumbers('walkLemming', { start: 0, end: 7 }),
             frameRate: 10,
@@ -221,22 +220,37 @@ class scene2 extends Phaser.Scene
         });
 
         this.anims.create({
-            key: 'fallOpenUmbrella',
-            frames: this.anims.generateFrameNumbers('fallLemming', { start: 0, end: 7 }),
+            key: 'fallWithoutUmbrella',
+            frames: this.anims.generateFrameNumbers('fallLemming', { start: 0, end: 3 }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'fallUmbrellaOpened',
+            key: 'fallOpenUmbrella',
             frames: this.anims.generateFrameNumbers('fallLemming', { start: 4, end: 7 }),
             frameRate: 10,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'fallUmbrellaOpened',
+            frames: this.anims.generateFrameNumbers('fallLemming', { start: 8, end: 12 }),
+            frameRate: 5,
+            yoyo: true,
             repeat: -1
         });
 
         this.anims.create({
             key: 'dig',
             frames: this.anims.generateFrameNumbers('digLemming', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'exit',
+            frames: this.anims.generateFrameNumbers('exitLemming', { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1
         });
@@ -254,8 +268,14 @@ class scene2 extends Phaser.Scene
             frameRate: 10,
             repeat: -1
         });
-    }
 
+        this.anims.create({
+            key: 'die',
+            frames: this.anims.generateFrameNumbers('dieLemming', { start: 0, end: 14 }),
+            frameRate: 10,
+            repeat: 0
+        });
+    }
     update()
     {
         timeSinceLastIncrement += 0.01;

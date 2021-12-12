@@ -12,16 +12,19 @@ class gameState extends Phaser.Scene
         this.cameras.main.setBackgroundColor("#000031");
         this.load.spritesheet('walkLemming','assets/Walk_Lemmings(6x10).png',
         {frameWidth:6,frameHeight:10});
-        this.load.spritesheet('fallLemming','assets/Fall_Lemmings(6x10).png',
-        {frameWidth:6,frameHeight:10});
+        this.load.spritesheet('fallLemming','assets/Fall_Lemmings9x16.png',
+        {frameWidth:9,frameHeight:16});
         this.load.spritesheet('digLemming','assets/Dig_Lemmings(11x12).png',
         {frameWidth:11,frameHeight:12});
+        this.load.spritesheet('exitLemming','assets/Exiting_Lemmings5x13.png',
+        {frameWidth:5,frameHeight:13});
         this.load.spritesheet('trapDoor','assets/trapDoor.png',
         {frameWidth:41,frameHeight:25});
         this.load.spritesheet('door','assets/door.png',
         {frameWidth:33,frameHeight:25});
         this.load.image('tempTerrain','assets/tempTerrain.png');
         this.load.image('mask','assets/mask.png');
+
     }
     create()
     {
@@ -173,7 +176,7 @@ class gameState extends Phaser.Scene
 
     loadAnimations()
     {
-		this.anims.create({
+        this.anims.create({
             key: 'walk',
             frames: this.anims.generateFrameNumbers('walkLemming', { start: 0, end: 7 }),
             frameRate: 10,
@@ -181,22 +184,37 @@ class gameState extends Phaser.Scene
         });
 
         this.anims.create({
-            key: 'fallOpenUmbrella',
-            frames: this.anims.generateFrameNumbers('fallLemming', { start: 0, end: 7 }),
+            key: 'fallWithoutUmbrella',
+            frames: this.anims.generateFrameNumbers('fallLemming', { start: 0, end: 3 }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'fallUmbrellaOpened',
+            key: 'fallOpenUmbrella',
             frames: this.anims.generateFrameNumbers('fallLemming', { start: 4, end: 7 }),
             frameRate: 10,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'fallUmbrellaOpened',
+            frames: this.anims.generateFrameNumbers('fallLemming', { start: 8, end: 12 }),
+            frameRate: 5,
+            yoyo: true,
             repeat: -1
         });
 
         this.anims.create({
             key: 'dig',
             frames: this.anims.generateFrameNumbers('digLemming', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'exit',
+            frames: this.anims.generateFrameNumbers('exitLemming', { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1
         });

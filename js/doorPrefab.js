@@ -8,12 +8,13 @@ class doorPrefab extends Phaser.GameObjects.Sprite
         if(playAnimation)
         this.anims.play('openTrapDoor',true);
         else
-        this.anims.play('DoorAnim',true);
+        this.anims.playReverse('DoorAnim',true);
         this.setOrigin(.5, 0);
     }
 
     preUpdate(time, delta)
     {
+        this.body.setSize(1, 25);
         this.body.allowGravity = false;
         this.body.immovable = true;
         super.preUpdate(time, delta)

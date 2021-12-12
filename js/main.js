@@ -11,7 +11,11 @@ var gamePrefs=
     ypos: [],
     fallingInsideATunnel: [],
     finished: [],
-    umbrella: []
+    umbrella: [],
+    falling: [],
+    startFallPosition: [],
+    currentFallPosition: [],
+    death: []
 }
 
 var timerSpawn = 0;
@@ -31,7 +35,7 @@ var config=
     type: Phaser.AUTO,
     width:800,
     height:600,
-    scene:[scene2],
+    scene:[gameState, scene2],
     render:{
         pixelArt:true
     },

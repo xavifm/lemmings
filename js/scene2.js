@@ -18,8 +18,8 @@ class scene2 extends Phaser.Scene
         {frameWidth:11,frameHeight:12});
         this.load.spritesheet('trapDoor','assets/trapDoor.png',
         {frameWidth:41,frameHeight:25});
-        this.load.spritesheet('door','assets/door.png',
-        {frameWidth:33,frameHeight:25});
+        this.load.spritesheet('door','assets/door2.png',
+        {frameWidth:41,frameHeight:25});
         this.load.image('tempTerrain2','assets/tempTerrain2.png');
         this.load.image('columnSprite','assets/columnSprite.png');
         this.load.image('columnSprite2','assets/columnSprite2.png');

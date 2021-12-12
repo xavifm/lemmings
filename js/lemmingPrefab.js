@@ -1,7 +1,7 @@
 class lemmingPrefab extends Phaser.GameObjects.Sprite
 {
     index;
-    constructor(_scene,_positionX,_positionY,_spriteTag, posNum)
+    constructor(_scene,_positionX,_positionY,_spriteTag, posNum, sceneName)
     {
         gamePrefs.umbrella[posNum] = false;
         super(_scene,_positionX,_positionY,_spriteTag);
@@ -11,7 +11,7 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
         this.anims.play('walk',true);
         gamePrefs.walking[posNum] = true;
         this.depth = 1;
-        const Kscene = this.scene.scene.get("gameState");
+        const Kscene = this.scene.scene.get(sceneName);
         this.index = posNum;
         Kscene.physics.add.overlap(this, Kscene.bullets, function(){
             gamePrefs.touchingGround[posNum] = true; 

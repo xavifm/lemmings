@@ -31,7 +31,7 @@ var config=
     type: Phaser.AUTO,
     width:800,
     height:600,
-    scene:[gameState],
+    scene:[scene2],
     render:{
         pixelArt:true
     },

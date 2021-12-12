@@ -1,15 +1,15 @@
-class gameState extends Phaser.Scene
+class scene2 extends Phaser.Scene
 {
     constructor()
     {
         super(
         {
-            key:"gameState"
+            key:"scene2"
         });
     }
     preload()
     {
-        this.cameras.main.setBackgroundColor("#000031");
+        this.cameras.main.setBackgroundColor("#000000");
         this.load.spritesheet('walkLemming','assets/Walk_Lemmings(6x10).png',
         {frameWidth:6,frameHeight:10});
         this.load.spritesheet('fallLemming','assets/Fall_Lemmings(6x10).png',
@@ -20,7 +20,9 @@ class gameState extends Phaser.Scene
         {frameWidth:41,frameHeight:25});
         this.load.spritesheet('door','assets/door.png',
         {frameWidth:33,frameHeight:25});
-        this.load.image('tempTerrain','assets/tempTerrain.png');
+        this.load.image('tempTerrain2','assets/tempTerrain2.png');
+        this.load.image('columnSprite','assets/columnSprite.png');
+        this.load.image('columnSprite2','assets/columnSprite2.png');
         this.load.image('mask','assets/mask.png');
     }
     create()
@@ -37,13 +39,24 @@ class gameState extends Phaser.Scene
               
        for(let index = 0; index < 10; index++)
        {
-        this.createTerrain(45+index*90, 300+70, false);
         this.createTerrain(45+index*90, 500+50, false);
        }
        for(let index = 0; index < 2; index++)
        {
-        this.createTerrain(index*800, 210+70, true);
         this.createTerrain(index*800, 410+50, true);
+       }
+
+       var columnHeight = 5;
+
+       for(let index = 0; index < 3; index++)
+       {
+            for(let index2 = 0; index2 < columnHeight; index2++) 
+            {
+                this.createColumn(100+index*100, 500+50-index2*50, true);
+                if(index2 == columnHeight-1)
+                this.createColumn(100+index*100, 500+50-index2*52, false);
+            }
+            columnHeight -= 1;
        }
 
        this.createDoor(500, 502);
@@ -61,7 +74,7 @@ class gameState extends Phaser.Scene
         var lemming = this.enemies.getFirst(false);
         if(!lemming)
         {
-            lemming = new lemmingPrefab(this,posx,posy,'walkLemming', index, "gameState").setInteractive();
+            lemming = new lemmingPrefab(this,posx,posy,'walkLemming', index, "scene2").setInteractive();
             lemming.setScale(2);
 
             lemming.on('pointerdown', function (pointer) 
@@ -116,7 +129,34 @@ class gameState extends Phaser.Scene
 
         if(!terrain)
         {
-            terrain = new terrainPrefab(this,posx,posy,'tempTerrain', false);
+            terrain = new terrainPrefab(this,posx,posy,'tempTerrain2', false);
+            terrain.setScale(2);
+            if(!isWall)
+            this.bullets.add(terrain);
+            else
+            this.wallsGroup.add(terrain);
+        }
+        else
+        {
+            terrain.active = true;
+            terrain.body.reset(posx,posy);
+        }
+    }
+
+    createColumn(posx, posy, isWall)
+    {
+        var terrain
+        if(!isWall)
+        terrain = this.bullets.getFirst(false);
+        else
+        terrain = this.wallsGroup.getFirst(false);
+
+        if(!terrain)
+        {
+            if(isWall)
+            terrain = new terrainPrefab(this,posx,posy,'columnSprite', true);
+            else 
+            terrain = new terrainPrefab(this,posx,posy,'columnSprite2', true);
             terrain.setScale(2);
             if(!isWall)
             this.bullets.add(terrain);

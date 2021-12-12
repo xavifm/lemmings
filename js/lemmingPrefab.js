@@ -3,6 +3,7 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
     index;
     constructor(_scene,_positionX,_positionY,_spriteTag, posNum)
     {
+        gamePrefs.umbrella[posNum] = false;
         super(_scene,_positionX,_positionY,_spriteTag);
         _scene.add.existing(this);
         _scene.physics.add.existing(this);
@@ -41,6 +42,7 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
         this.flipX = gamePrefs.flipX[this.index];
         this.walking = gamePrefs.walking[this.index];
         this.digging = gamePrefs.digging[this.index];
+        this.umbrella = gamePrefs.umbrella[this.index];
         
         this.body.setVelocityX(0);
         this.body.maxVelocity.y = 50;
@@ -58,7 +60,7 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
             this.body.setVelocityX(-50); 
         }
 
-        if(this.body.velocity.y > 30 && !this.digging) 
+        if(this.body.velocity.y > 30 && !this.digging && this.umbrella) 
         {
             if(this.body.velocity.y < 35)
             this.anims.play('fallOpenUmbrella', true);

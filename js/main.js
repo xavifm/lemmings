@@ -10,7 +10,8 @@ var gamePrefs=
     xpos: [],
     ypos: [],
     fallingInsideATunnel: [],
-    finished: []
+    finished: [],
+    umbrella: []
 }
 
 var timerSpawn = 0;
@@ -23,6 +24,7 @@ var maskCollider;
 var doors;
 var timeSinceLastIncrement = 0;
 var index = 0;
+let keyA;
 
 var config=
 {

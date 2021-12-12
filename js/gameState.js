@@ -24,7 +24,8 @@ class gameState extends Phaser.Scene
         this.load.image('mask','assets/mask.png');
     }
     create()
-    { 
+    {
+       keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
        this.timerSpawn = Math.random() * (4 - 1) + 1;
 
        this.loadAnimations();
@@ -63,7 +64,8 @@ class gameState extends Phaser.Scene
             lemming = new lemmingPrefab(this,posx,posy,'walkLemming', index).setInteractive();
             lemming.setScale(2);
 
-            lemming.on('pointerdown', function (pointer) {
+            lemming.on('pointerdown', function (pointer) 
+            {
 
                 this.setTint(0xff0000);
                 //this.anims.play('dig',true);
@@ -71,9 +73,18 @@ class gameState extends Phaser.Scene
                 gamePrefs.digging[index] = true;
                 //lemming.physics.checkCollision.none = false;
                 //collider1.active = false;
-        
             });
         
+            lemming.on('pointerover', function (pointer) 
+            {
+                this.setTint(0xff0000);
+                if (!keyA.isUp)
+                {
+                    gamePrefs.umbrella[index] = true;
+                    console.log('umbrella enabled for lemming ' + index);
+                }
+            });
+
             lemming.on('pointerout', function (pointer) {
         
                 this.clearTint();

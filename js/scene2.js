@@ -28,6 +28,7 @@ class scene2 extends Phaser.Scene
         this.load.image('columnSprite','assets/columnSprite.png');
         this.load.image('columnSprite2','assets/columnSprite2.png');
         this.load.image('mask','assets/mask.png');
+        this.load.image('DIGUI','assets/UIDIG.png');
     }
     create()
     {
@@ -35,6 +36,11 @@ class scene2 extends Phaser.Scene
        for(let index = 0 ; index < gamePrefs.finished.length ; index++) 
        {
             console.log(gamePrefs.finished[index]);
+       }
+
+       for(let index = 0 ; index < gamePrefs.flipX.length ; index++)
+       {
+        gamePrefs.flipX[index] = false;
        }
 
        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -46,6 +52,7 @@ class scene2 extends Phaser.Scene
        this.maskGroup = this.physics.add.group();
        this.enemies = this.physics.add.group();
        this.doors = this.physics.add.group();
+       this.uiGroup = this.physics.add.group();
               
        for(let index = 0; index < 10; index++)
        {
@@ -57,6 +64,8 @@ class scene2 extends Phaser.Scene
        }
 
        var columnHeight = 8;
+
+       this.instantiateUI(760, 10);
 
        for(let index = 0; index < 3; index++)
        {
@@ -79,6 +88,31 @@ class scene2 extends Phaser.Scene
        this.physics.add.overlap(this.enemies, this.doors);
     }
 
+    instantiateUI(posx, posy) 
+    {
+        var UI;
+        UI = new terrainPrefab(this,posx,posy,'DIGUI').setInteractive();
+        UI.setScale(2);
+        
+        UI.on('pointerdown', function (pointer) 
+        {
+            const Kscene = this.scene.scene.get("gameState");
+            if(Kscene.UIMode == 0) 
+            {
+                Kscene.UIMode = 1;
+                this.setTint(0xff0000);
+            }
+            else if(Kscene.UIMode == 1) 
+            {
+                Kscene.UIMode = 0;
+                this.clearTint();
+            }
+            
+        });
+
+        this.uiGroup.add(UI);
+    }
+
     createLemming(posx, posy, index)
     {
         var lemming = this.enemies.getFirst(false);
@@ -87,10 +121,11 @@ class scene2 extends Phaser.Scene
             lemming = new lemmingPrefab(this,posx,posy,'fallLemming', index, "scene2").setInteractive();
             lemming.setScale(2);
         
-            lemming.on('pointerover', function (pointer) 
+            lemming.on('pointerdown', function (pointer) 
             {
                 this.setTint(0xff0000);
-                if (!keyA.isUp)
+                const Kscene = this.scene.scene.get("gameState");
+                if (Kscene.UIMode == 1)
                 {
                     gamePrefs.umbrella[index] = true;
                     console.log('umbrella enabled for lemming ' + index);

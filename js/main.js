@@ -22,6 +22,7 @@ var timerSpawn = 0;
 var lifes = 2;
 var wallsGroup;
 var maskGroup;
+var uiGroup;
 var collider1;
 var collider2;
 var maskCollider;
@@ -29,6 +30,7 @@ var doors;
 var timeSinceLastIncrement = 0;
 var index = 0;
 let keyA;
+var UIMode;
 
 var config=
 {

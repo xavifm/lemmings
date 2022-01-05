@@ -23,15 +23,18 @@ class gameState extends Phaser.Scene
         this.load.spritesheet('door','assets/door.png',
         {frameWidth:33,frameHeight:25});
         this.load.image('tempTerrain','assets/tempTerrain.png');
+        this.load.image('DIGUI','assets/UIDIG.png');
         this.load.image('mask','assets/mask.png');
 
     }
     create()
     {
+       this.UIMode = 0;
        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
        this.timerSpawn = Math.random() * (4 - 1) + 1;
 
        this.loadAnimations();
+       this.uiGroup = this.physics.add.group();
        this.bullets = this.physics.add.group();
        this.wallsGroup = this.physics.add.group();
        this.maskGroup = this.physics.add.group();
@@ -52,6 +55,8 @@ class gameState extends Phaser.Scene
        this.createDoor(500, 502);
 
        this.createTrapDoor(100, 100);
+
+       this.instantiateUI(760, 10);
        
        collider1 = this.physics.add.overlap(this.enemies, this.bullets);
        collider2 = this.physics.add.overlap(this.enemies, this.wallsGroup);
@@ -69,11 +74,14 @@ class gameState extends Phaser.Scene
 
             lemming.on('pointerdown', function (pointer) 
             {
-
+                const Kscene = this.scene.scene.get("gameState");
                 this.setTint(0xff0000);
                 //this.anims.play('dig',true);
-                gamePrefs.walking[index] = false;
-                gamePrefs.digging[index] = true;
+                if(Kscene.UIMode == 1) 
+                {
+                    gamePrefs.walking[index] = false;
+                    gamePrefs.digging[index] = true;
+                }
                 //lemming.physics.checkCollision.none = false;
                 //collider1.active = false;
             });
@@ -107,6 +115,31 @@ class gameState extends Phaser.Scene
             lemming.active = true;
             lemming.body.reset(posx,posy);
         }
+    }
+
+    instantiateUI(posx, posy) 
+    {
+        var UI;
+        UI = new terrainPrefab(this,posx,posy,'DIGUI').setInteractive();
+        UI.setScale(2);
+        
+        UI.on('pointerdown', function (pointer) 
+        {
+            const Kscene = this.scene.scene.get("gameState");
+            if(Kscene.UIMode == 0) 
+            {
+                Kscene.UIMode = 1;
+                this.setTint(0xff0000);
+            }
+            else if(Kscene.UIMode == 1) 
+            {
+                Kscene.UIMode = 0;
+                this.clearTint();
+            }
+            
+        });
+
+        this.uiGroup.add(UI);
     }
 
     createTerrain(posx, posy, isWall)

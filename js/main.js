@@ -15,7 +15,8 @@ var gamePrefs=
     falling: [],
     startFallPosition: [],
     currentFallPosition: [],
-    death: []
+    death: [],
+    textArray: []
 }
 
 var timerSpawn = 0;
@@ -36,7 +37,7 @@ var config=
 {
     type: Phaser.AUTO,
     width:800,
-    height:600,
+    height:750,
     scene:[gameState, scene2],
     render:{
         pixelArt:true

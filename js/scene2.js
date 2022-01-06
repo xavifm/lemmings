@@ -65,7 +65,14 @@ class scene2 extends Phaser.Scene
 
        var columnHeight = 8;
 
-       this.instantiateUI(760, 10);
+       this.instantiateCursor();
+
+       this.instantiateUI(400, 600, true);
+       this.instantiateUI(110, 660, false, 0);
+       this.instantiateUI(50, 660, false, 1);
+
+       gamePrefs.textArray[0] = this.add.bitmapText(37, 610, '8bit','10',34);
+       gamePrefs.textArray[1] = this.add.bitmapText(110, 610, '8bit','0',34);
 
        for(let index = 0; index < 3; index++)
        {
@@ -88,27 +95,62 @@ class scene2 extends Phaser.Scene
        this.physics.add.overlap(this.enemies, this.doors);
     }
 
-    instantiateUI(posx, posy) 
+    instantiateCursor() 
+    {
+        this.input.setDefaultCursor('url(assets/Lemmings_sp_cursor.cur), pointer');
+    }
+
+    instantiateUI(posx, posy, isBG, ButtonType) 
     {
         var UI;
-        UI = new terrainPrefab(this,posx,posy,'DIGUI').setInteractive();
-        UI.setScale(2);
-        
-        UI.on('pointerdown', function (pointer) 
+
+        if(!isBG && ButtonType == 0) 
         {
-            const Kscene = this.scene.scene.get("gameState");
-            if(Kscene.UIMode == 0) 
-            {
-                Kscene.UIMode = 1;
-                this.setTint(0xff0000);
-            }
-            else if(Kscene.UIMode == 1) 
-            {
-                Kscene.UIMode = 0;
-                this.clearTint();
-            }
+            UI = new uiPrefab(this,posx,posy,'DIGUI', 0, 1).setInteractive();
+            UI.setScale(4);
             
-        });
+            UI.on('pointerdown', function (pointer) 
+            {
+                const Kscene = this.scene.scene.get("gameState");
+                if(Kscene.UIMode != 1) 
+                {
+                    Kscene.UIMode = 1;
+                    this.setTint(0xa8a8a8);
+                }
+                else if(Kscene.UIMode == 1) 
+                {
+                    Kscene.UIMode = 0;
+                    this.clearTint();
+                }
+                
+            });   
+        }
+        else if(!isBG && ButtonType == 1) 
+        {
+            UI = new uiPrefab(this,posx,posy,'UMBRELLAUI', 0, 2).setInteractive();
+            UI.setScale(4);
+            
+            UI.on('pointerdown', function (pointer) 
+            {
+                const Kscene = this.scene.scene.get("gameState");
+                if(Kscene.UIMode != 2) 
+                {
+                    Kscene.UIMode = 2;
+                    this.setTint(0xa8a8a8);
+                }
+                else if(Kscene.UIMode == 2) 
+                {
+                    Kscene.UIMode = 0;
+                    this.clearTint();
+                }
+                
+            });   
+        }
+        else 
+        {
+            UI = new terrainPrefab(this,posx,posy,'blackBG').setInteractive();
+            UI.setScale(2);
+        }
 
         this.uiGroup.add(UI);
     }
@@ -125,7 +167,7 @@ class scene2 extends Phaser.Scene
             {
                 this.setTint(0xff0000);
                 const Kscene = this.scene.scene.get("gameState");
-                if (Kscene.UIMode == 1)
+                if (Kscene.UIMode == 2)
                 {
                     gamePrefs.umbrella[index] = true;
                     console.log('umbrella enabled for lemming ' + index);
@@ -314,6 +356,16 @@ class scene2 extends Phaser.Scene
     update()
     {
         timeSinceLastIncrement += 0.01;
+
+        var lemmingWorkQuantity = 0;
+
+        for(let index = 0; index < 10; index++)
+        {
+            if(!gamePrefs.umbrella[index])
+            lemmingWorkQuantity++;
+        }
+
+        gamePrefs.textArray[0].setText(lemmingWorkQuantity.toString());
         
         if (timeSinceLastIncrement >= 1 && index < 10)
         {

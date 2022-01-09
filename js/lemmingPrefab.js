@@ -42,12 +42,17 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
 
         Kscene.physics.add.overlap(this, Kscene.doors, function() {
             gamePrefs.finished[posNum] = true;
+            console.log(sceneName);
             for(let index = 0 ; index < gamePrefs.finished.length ; index++) 
             {
                 if(!gamePrefs.finished[index])
                     break;
-                if(index == gamePrefs.finished.length-1)
+                if(index == gamePrefs.finished.length-1 && sceneName == "gameState")
                 Kscene.scene.start('scene2');
+                else if(index == gamePrefs.finished.length-1 && sceneName == "scene2")
+                Kscene.scene.start('scene3');
+                else if(index == gamePrefs.finished.length-1 && sceneName == "scene3")
+                Kscene.scene.start('gameState');
             }
         });
     }
@@ -126,9 +131,9 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
             }
             else 
             {
-                if(this.anims.currentAnim.key === 'fallWithoutUmbrella' && gamePrefs.touchingGround[this.index] && this._sceneName == "scene2" && this.gracePeriod > 50) 
+                if(this.anims.currentAnim.key === 'fallWithoutUmbrella' && gamePrefs.touchingGround[this.index] && (this._sceneName == "scene2" || (this._sceneName == "scene3" && (gamePrefs.ypos[this.index] <= 390 || gamePrefs.ypos[this.index] >= 430))) && this.gracePeriod > 50) 
                 gamePrefs.death[this.index] = true;
-                else if(this._sceneName == "scene2") 
+                else if(this._sceneName == "scene2" || this._sceneName == "scene3") 
                 this.gracePeriod += 0.5;
 
                 gamePrefs.startFallPosition[this.index] = gamePrefs.ypos[this.index];
@@ -193,7 +198,6 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
                 this.body.setVelocityY(99999999);
             }
         }
-
         super.preUpdate(time, delta)
     }
 }

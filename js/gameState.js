@@ -32,6 +32,28 @@ class gameState extends Phaser.Scene
     }
     create()
     {
+        index = 0;
+        for(let index = 0 ; index < gamePrefs.death.length ; index++)
+        {
+            gamePrefs.death[index] = false;
+        }
+        for(let index = 0 ; index < gamePrefs.finished.length ; index++)
+        {
+            gamePrefs.finished[index] = false;
+        }
+        for(let index = 0 ; index < gamePrefs.flipX.length ; index++)
+        {
+            gamePrefs.flipX[index] = false;
+        }
+        for(let index = 0 ; index < gamePrefs.flipX.length ; index++)
+        {
+            gamePrefs.flipX[index] = false;
+        }
+        for(let index = 0 ; index < gamePrefs.flipX.length ; index++)
+        {
+            gamePrefs.umbrella[index] = false;
+        }
+
        this.UIMode = 0;
        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
        this.timerSpawn = Math.random() * (4 - 1) + 1;
@@ -60,18 +82,18 @@ class gameState extends Phaser.Scene
        this.createTrapDoor(100, 100);
 
        this.instantiateCursor();
-
-       this.instantiateUI(400, 600, true);
-       this.instantiateUI(110, 660, false, 0);
-       this.instantiateUI(50, 660, false, 1);
-
-       gamePrefs.textArray[0] = this.add.bitmapText(37, 610, '8bit','0',34);
-       gamePrefs.textArray[1] = this.add.bitmapText(89, 610, '8bit','10',34);
        
        collider1 = this.physics.add.overlap(this.enemies, this.bullets);
        collider2 = this.physics.add.overlap(this.enemies, this.wallsGroup);
        maskCollider = this.physics.add.overlap(this.enemies, this.maskGroup);
        this.physics.add.overlap(this.enemies, this.doors);
+
+       this.instantiateUI(400, 600, true);
+       this.instantiateUI(110, 660, false, 0);
+       this.instantiateUI(50, 660, false, 1);
+
+       gamePrefs.textArray[0] = this.add.bitmapText(45, 610+60, '8bit','0',14);
+       gamePrefs.textArray[1] = this.add.bitmapText(100, 610+60, '8bit','10',14);
     }
 
     createLemming(posx, posy, index)

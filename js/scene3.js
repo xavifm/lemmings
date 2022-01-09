@@ -118,7 +118,8 @@ class scene3 extends Phaser.Scene
                 const Kscene = this.scene.scene.get("gameState");
                 this.setTint(0xff0000);
                 //this.anims.play('dig',true);
-                if(Kscene.UIMode == 1) 
+                console.log(gamePrefs.xpos[index]);
+                if(Kscene.UIMode == 1 && gamePrefs.xpos[index] < 345)  
                 {
                     gamePrefs.walking[index] = false;
                     gamePrefs.digging[index] = true;

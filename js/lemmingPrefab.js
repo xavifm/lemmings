@@ -42,7 +42,7 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
 
         Kscene.physics.add.overlap(this, Kscene.doors, function() {
             gamePrefs.finished[posNum] = true;
-            console.log(sceneName);
+            //console.log(sceneName);
             for(let index = 0 ; index < gamePrefs.finished.length ; index++) 
             {
                 if(!gamePrefs.finished[index])
@@ -86,7 +86,7 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
                 this.body.setVelocityX(-50); 
             }
 
-            if(!this.digging && !this.falling)
+            if(!this.digging && !this.falling && !gamePrefs.nukeActivated)
             {  
                 this.body.setSize(6, 10);
                 this.anims.play('walk',true);
@@ -109,7 +109,7 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
                 {
                     gamePrefs.currentFallPosition[this.index] = gamePrefs.ypos[this.index];
                 }
-                if(Phaser.Math.Distance.Between(0, gamePrefs.startFallPosition[this.index], 0, gamePrefs.currentFallPosition[this.index]) < 50)
+                if(Phaser.Math.Distance.Between(0, gamePrefs.startFallPosition[this.index], 0, gamePrefs.currentFallPosition[this.index]) < 50 && !gamePrefs.nukeActivated)
                 {
                     this.body.setSize(6, 10);
                     this.anims.play('fallWithoutUmbrella', true);
@@ -197,6 +197,18 @@ class lemmingPrefab extends Phaser.GameObjects.Sprite
                 this.body.maxVelocity.y = 99999999;
                 this.body.setVelocityY(99999999);
             }
+        }
+
+        //Tots els lemmings moren quan s'activa la 'nuke'
+        if(gamePrefs.nukeActivated)
+        {
+            //console.log(this.index);
+            this.body.allowGravity = false;
+            this.body.setSize(16, 16);
+            if(this.anims.currentAnim.key !== 'explode')
+                this.anims.play('explode',true);
+            this.body.setVelocityX(0);
+            this.body.setVelocityY(0);
         }
         super.preUpdate(time, delta)
     }

@@ -19,6 +19,8 @@ class gameState extends Phaser.Scene
         {frameWidth:11,frameHeight:12});
         this.load.spritesheet('exitLemming','assets/Exiting_Lemmings5x13.png',
         {frameWidth:5,frameHeight:13});
+        this.load.spritesheet('explodeLemming','assets/Lemmings_exploding_spritesheet_16x16.png',
+        {frameWidth:16,frameHeight:16});
         this.load.spritesheet('trapDoor','assets/trapDoor.png',
         {frameWidth:41,frameHeight:25});
         this.load.spritesheet('door','assets/door.png',
@@ -26,9 +28,14 @@ class gameState extends Phaser.Scene
         this.load.image('tempTerrain','assets/tempTerrain.png');
         this.load.image('DIGUI','assets/UIDIG.png');
         this.load.image('UMBRELLAUI','assets/UIUMBRELLA.png');
+        this.load.image('NUKEUI','assets/UINUKE.png');
         this.load.image('blackBG','assets/blackBG.PNG');
         this.load.image('mask','assets/mask.png');
+        this.load.audio("music", ["assets/sounds/Lemmings_Music_Amiga.mp3"]);
 
+        gamePrefs.numOfLemmings = 10;
+
+        gamePrefs.maxNonClickedLemmings = gamePrefs.numOfLemmings;
     }
     create()
     {
@@ -89,11 +96,20 @@ class gameState extends Phaser.Scene
        this.physics.add.overlap(this.enemies, this.doors);
 
        this.instantiateUI(400, 600, true);
-       this.instantiateUI(110, 660, false, 0);
-       this.instantiateUI(50, 660, false, 1);
+       this.instantiateUI(110, 630, false, 0);
+       this.instantiateUI(50, 630, false, 1);
+       this.instantiateUI(750, 630, false, 2);
 
-       gamePrefs.textArray[0] = this.add.bitmapText(45, 610+60, '8bit','0',14);
-       gamePrefs.textArray[1] = this.add.bitmapText(100, 610+60, '8bit','10',14);
+       gamePrefs.textArray[0] = this.add.bitmapText(45, 610+30, '8bit','0',14);
+       gamePrefs.textArray[1] = this.add.bitmapText(100, 610+30, '8bit','10',14);
+
+       gamePrefs.BGMusic[0] = this.sound.add("music", { loop: true, volume: 0.3});
+       if(!gamePrefs.BGMusic[0].isPlaying)
+        {
+            gamePrefs.BGMusic[0].play();
+        }
+            
+       
     }
 
     createLemming(posx, posy, index)
@@ -113,6 +129,7 @@ class gameState extends Phaser.Scene
                 {
                     gamePrefs.walking[index] = false;
                     gamePrefs.digging[index] = true;
+                    gamePrefs.maxNonClickedLemmings--;
                 }
                 //lemming.physics.checkCollision.none = false;
                 //collider1.active = false;
@@ -124,7 +141,7 @@ class gameState extends Phaser.Scene
                 if (!keyA.isUp)
                 {
                     gamePrefs.umbrella[index] = true;
-                    console.log('umbrella enabled for lemming ' + index);
+                    //console.log('umbrella enabled for lemming ' + index);
                 }
             });
 
@@ -200,6 +217,28 @@ class gameState extends Phaser.Scene
                 
             });   
         }
+        else if(!isBG && ButtonType == 2) 
+        {
+            UI = new uiPrefab(this,posx,posy,'NUKEUI', 0, 2).setInteractive();
+            UI.setScale(4);
+            
+            UI.on('pointerdown', function (pointer) 
+            {
+                const Kscene = this.scene.scene.get("gameState");
+                if(Kscene.UIMode != 3) 
+                {
+                    Kscene.UIMode = 3;
+                    gamePrefs.nukeActivated = true;
+                    this.setTint(0xa8a8a8);
+                }
+                else if(Kscene.UIMode == 3) 
+                {
+                    Kscene.UIMode = 0;
+                    this.clearTint();
+                }
+                
+            });   
+        }
         else 
         {
             UI = new terrainPrefab(this,posx,posy,'blackBG').setInteractive();
@@ -264,7 +303,7 @@ class gameState extends Phaser.Scene
         if(!mask)
         {
             mask = new maskPrefab(this,posx,posy,'mask');
-            mask.setScale(1.8);
+            mask.setScale(1.6);
             this.maskGroup.add(mask);
         }
         else
@@ -320,6 +359,13 @@ class gameState extends Phaser.Scene
         });
 
         this.anims.create({
+            key: 'explode',
+            frames: this.anims.generateFrameNumbers('explodeLemming', { start: 0, end: 13 }),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        this.anims.create({
             key: 'openTrapDoor',
             frames: this.anims.generateFrameNumbers('trapDoor', { start: 0, end: 9 }),
             frameRate: 10,
@@ -352,21 +398,29 @@ class gameState extends Phaser.Scene
     {
         timeSinceLastIncrement += 0.01;
 
+        gamePrefs.textArray[0].setText('0');
+
         var lemmingWorkQuantity = 0;
 
-        for(let index = 0; index < 10; index++)
+        for(let index = 0; index < gamePrefs.maxNonClickedLemmings; index++)
         {
-            if(!gamePrefs.digging[index])
+            //if(!gamePrefs.digging[index])
             lemmingWorkQuantity++;
         }
 
         gamePrefs.textArray[1].setText(lemmingWorkQuantity.toString());
 
-        if (timeSinceLastIncrement >= 1 && index < 10)
+        if (timeSinceLastIncrement >= 1 && index < gamePrefs.numOfLemmings && !gamePrefs.nukeActivated)
         {
           this.createLemming(100, 110, index); 
           index++;  
           timeSinceLastIncrement = 0;
+        }
+        else if(timeSinceLastIncrement >= 3 && gamePrefs.nukeActivated)
+        {
+                this.scene.start('gameState');
+                gamePrefs.nukeActivated = false;
+                this.UIMode = 0;
         }
     }
 }

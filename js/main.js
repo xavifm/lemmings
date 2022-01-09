@@ -16,7 +16,12 @@ var gamePrefs=
     startFallPosition: [],
     currentFallPosition: [],
     death: [],
-    textArray: []
+    textArray: [],
+    numOfLemmings: [],
+    maxNonClickedLemmings: [],
+    maxNonClickedLemmings2: [],
+    nukeActivated:false,
+    BGMusic: []
 }
 
 var timerSpawn = 0;

@@ -29,14 +29,21 @@ class scene2 extends Phaser.Scene
         this.load.image('columnSprite2','assets/columnSprite2.png');
         this.load.image('mask','assets/mask.png');
         this.load.image('DIGUI','assets/UIDIG.png');
+        this.load.image('NUKEUI','assets/UINUKE.png');
+
+        gamePrefs.numOfLemmings = 10;
+
+        gamePrefs.maxNonClickedLemmings = gamePrefs.numOfLemmings;
+
+        //gamePrefs.textArray[1].setText(0);
     }
     create()
     {
        index = 0;
-       for(let index = 0 ; index < gamePrefs.finished.length ; index++) 
-       {
-            console.log(gamePrefs.finished[index]);
-       }
+       //for(let index = 0 ; index < gamePrefs.finished.length ; index++) 
+       //{
+            //console.log(gamePrefs.finished[index]);
+       //}
 
        for(let index = 0 ; index < gamePrefs.death.length ; index++)
        {
@@ -96,11 +103,12 @@ class scene2 extends Phaser.Scene
        this.physics.add.overlap(this.enemies, this.doors);
 
        this.instantiateUI(400, 600, true);
-       this.instantiateUI(110, 660, false, 0);
-       this.instantiateUI(50, 660, false, 1);
+       this.instantiateUI(110, 630, false, 0);
+       this.instantiateUI(50, 630, false, 1);
+       this.instantiateUI(750, 630, false, 2);
 
-       gamePrefs.textArray[0] = this.add.bitmapText(45, 610+60, '8bit','0',14);
-       gamePrefs.textArray[1] = this.add.bitmapText(100, 610+60, '8bit','10',14);
+       gamePrefs.textArray[0] = this.add.bitmapText(45, 610+30, '8bit','0',14);
+       gamePrefs.textArray[1] = this.add.bitmapText(100, 610+30, '8bit','10',14);
     }
 
     instantiateCursor() 
@@ -154,6 +162,28 @@ class scene2 extends Phaser.Scene
                 
             });   
         }
+        else if(!isBG && ButtonType == 2) 
+        {
+            UI = new uiPrefab(this,posx,posy,'NUKEUI', 0, 2).setInteractive();
+            UI.setScale(4);
+            
+            UI.on('pointerdown', function (pointer) 
+            {
+                const Kscene = this.scene.scene.get("gameState");
+                if(Kscene.UIMode != 3) 
+                {
+                    Kscene.UIMode = 3;
+                    gamePrefs.nukeActivated = true;
+                    this.setTint(0xa8a8a8);
+                }
+                else if(Kscene.UIMode == 3) 
+                {
+                    Kscene.UIMode = 0;
+                    this.clearTint();
+                }
+                
+            });   
+        }
         else 
         {
             UI = new terrainPrefab(this,posx,posy,'blackBG').setInteractive();
@@ -178,7 +208,8 @@ class scene2 extends Phaser.Scene
                 if (Kscene.UIMode == 2)
                 {
                     gamePrefs.umbrella[index] = true;
-                    console.log('umbrella enabled for lemming ' + index);
+                    gamePrefs.maxNonClickedLemmings--;
+                    //console.log('umbrella enabled for lemming ' + index);
                 }
             });
 
@@ -285,7 +316,7 @@ class scene2 extends Phaser.Scene
         if(!mask)
         {
             mask = new maskPrefab(this,posx,posy,'mask');
-            mask.setScale(1.8);
+            mask.setScale(1.6);
             this.maskGroup.add(mask);
         }
         else
@@ -365,21 +396,29 @@ class scene2 extends Phaser.Scene
     {
         timeSinceLastIncrement += 0.01;
 
+        gamePrefs.textArray[1].setText('0');
+
         var lemmingWorkQuantity = 0;
 
-        for(let index = 0; index < 10; index++)
+        for(let index = 0; index < gamePrefs.maxNonClickedLemmings; index++)
         {
-            if(!gamePrefs.umbrella[index])
+            //if(!gamePrefs.umbrella[index])
             lemmingWorkQuantity++;
         }
 
         gamePrefs.textArray[0].setText(lemmingWorkQuantity.toString());
         
-        if (timeSinceLastIncrement >= 1 && index < 10)
+        if (timeSinceLastIncrement >= 1 && index < gamePrefs.numOfLemmings && !gamePrefs.nukeActivated)
         {
           this.createLemming(100, 110, index); 
           index++;  
           timeSinceLastIncrement = 0;
+        }
+        else if(timeSinceLastIncrement >= 3 && gamePrefs.nukeActivated)
+        {
+                this.scene.start('scene2');
+                gamePrefs.nukeActivated = false;
+                this.UIMode = 0;
         }
     }
 }

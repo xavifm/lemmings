@@ -2,6 +2,6 @@
 
 A JavaScript recreation of the Lemmings game.
 
-<a href="https://gifyu.com/image/S4Xil"><img src="https://s6.gifyu.com/images/S4Xil.gif" alt="5e942f056185415ac6d58079f4b3ff64" border="0" /></a>
+![8e9c8988-d200-49cb-8cf1-a92e35bfd7bd_rw_1200](https://github.com/user-attachments/assets/752e99de-28b6-45f4-93a1-b8f56e6bf2cd)
 
 This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
